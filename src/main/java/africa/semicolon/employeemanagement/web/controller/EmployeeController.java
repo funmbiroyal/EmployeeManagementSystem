@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/employee/")
 public class EmployeeController {
@@ -24,8 +25,8 @@ public class EmployeeController {
     @Autowired
     EmployeeService employeeService;
 
-    @PostMapping("create")
-    public ResponseEntity<?> createNewEmployee(EmployeeDto employeeDto){
+    @PostMapping("/create")
+    public ResponseEntity<?> createNewEmployee(@RequestBody EmployeeDto employeeDto){
         try{
             Employee employee = employeeService.createEmployee(employeeDto);
             return ResponseEntity.ok().body(employee);
@@ -34,7 +35,7 @@ public class EmployeeController {
         }
     }
 
-    @GetMapping("getRecords/")
+    @GetMapping("/getRecords")
     public ResponseEntity<?> getAllEmployeesRecord(){
         try{
             List<Employee> employee = employeeService.findAllEmployee();
@@ -44,7 +45,7 @@ public class EmployeeController {
         }
     }
 
-    @PatchMapping(value = "update/{email}", consumes = {"application/json-patch+json"})
+    @PatchMapping(value = "/update/{email}", consumes = {"application/json-patch+json"})
     public ResponseEntity<?> updateEmployeeRecord(@PathVariable String email, @RequestBody JsonPatch jsonpatch){
         try{
             Employee employee = employeeService.updateEmployee(email, jsonpatch);
@@ -55,8 +56,8 @@ public class EmployeeController {
         }
     }
 
-    @DeleteMapping("delete/")
-    public ResponseEntity<?> deleteEmployeeRecord(Long id){
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteEmployeeRecord(@PathVariable Long id){
         try{
             String employee = employeeService.deleteEmployeeById(id);
             return new ResponseEntity<>(employee, HttpStatus.OK);
@@ -65,8 +66,8 @@ public class EmployeeController {
         }
     }
 
-    @GetMapping("single/")
-    public ResponseEntity<?> getSingleEmployee(Long id) throws EmployeeDoesNotExistsException {
+    @GetMapping("/single/{id}")
+    public ResponseEntity<?> getSingleEmployee(@PathVariable Long id) throws EmployeeDoesNotExistsException {
         try{
             Optional<Employee> employee = employeeService.findEmployeeById(id);
             return ResponseEntity.ok().body(employee);
