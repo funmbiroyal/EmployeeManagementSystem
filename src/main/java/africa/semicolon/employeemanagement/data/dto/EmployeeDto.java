@@ -2,8 +2,6 @@ package africa.semicolon.employeemanagement.data.dto;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
 
 @Data
 public class EmployeeDto {
