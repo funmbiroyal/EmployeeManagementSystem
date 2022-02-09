@@ -1,7 +1,9 @@
 package africa.semicolon.employeemanagement.web.controller;
 
+import africa.semicolon.employeemanagement.data.dto.EmployeeDto;
 import africa.semicolon.employeemanagement.data.model.Employee;
 import africa.semicolon.employeemanagement.data.repository.EmployeeRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +14,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -26,14 +32,14 @@ class EmployeeControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+
     @Autowired
     EmployeeRepository employeeRepository;
 
-    @Autowired
     ObjectMapper objectMapper;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws JsonProcessingException {
         objectMapper = new ObjectMapper();
     }
 
@@ -42,9 +48,9 @@ class EmployeeControllerTest {
     }
 
     @Test
-    @DisplayName("Test employee api")
-    void employeeApiTest() throws Exception {
-        mockMvc.perform(get("/api/employee/")
+    @DisplayName("Test get employees api")
+    void getAllEmployeesRecord() throws Exception {
+        mockMvc.perform(get("/api/employee/getRecords")
                         .contentType("application/json"))
                 .andExpect(status().is(200))
                 .andDo(print());
@@ -52,35 +58,42 @@ class EmployeeControllerTest {
 
     @Test
     void createNewEmployee() throws Exception {
-        Employee employee = new Employee();
-        employee.setFirstName("Toye");
-        employee.setLastName("David");
-        employee.setEmail("lalaland@gmail.com");
-        employee.setAge(28);
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setFirstName("Toye");
+        employeeDto.setLastName("David");
+        employeeDto.setEmail("lalaland@gmail.com");
+        employeeDto.setAge(28);
 
-        String requestBody = objectMapper.writeValueAsString(employee);
-
+        String requestBody = objectMapper.writeValueAsString(employeeDto);
         mockMvc.perform(post("/api/employee/create")
                         .contentType("application/json")
                         .content(requestBody))
                 .andExpect(status().is(200))
                 .andDo(print());
-
     }
 
     @Test
-    void getAllEmployeesRecord() {
+    void updateEmployeeRecord() throws Exception {
+        mockMvc.perform(patch("/api/employee/update/precious@gmail.com")
+                        .contentType("application/json-patch+json")
+                        .content(Files.readAllBytes(Path.of("payload.json"))))
+                .andExpect(status().is(200))
+                .andDo(print());
     }
 
     @Test
-    void updateEmployeeRecord() {
+    void deleteEmployeeRecord() throws Exception {
+        mockMvc.perform(delete("/api/employee/delete/2")
+                        .contentType("application/json"))
+                .andExpect(status().is(200))
+                .andDo(print());
     }
 
     @Test
-    void deleteEmployeeRecord() {
-    }
-
-    @Test
-    void getSingleEmployee() {
+    void getSingleEmployee() throws Exception {
+        mockMvc.perform(get("/api/employee/single/3")
+                        .contentType("application/json"))
+                .andExpect(status().is(200))
+                .andDo(print());
     }
 }
