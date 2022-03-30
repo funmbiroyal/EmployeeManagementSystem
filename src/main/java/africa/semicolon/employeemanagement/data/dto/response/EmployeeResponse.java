@@ -1,7 +1,6 @@
 package africa.semicolon.employeemanagement.data.dto.response;
 
 import africa.semicolon.employeemanagement.data.model.Level;
-import africa.semicolon.employeemanagement.data.model.Role;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -21,7 +20,6 @@ public class EmployeeResponse {
     private String departmentName;
     private Integer employeeSalary;
     private Level employeeJobLevel;
-    private Role jobRole;
     private Boolean isSuspended;
     private LocalDateTime creationDate;
 }

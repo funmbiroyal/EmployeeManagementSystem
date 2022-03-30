@@ -22,7 +22,6 @@ public interface EmployeeService {
     EmployeeResponse updateEmployeeSalaryByJobLevel(Long employeeId) throws EmployeeDoesNotExistsException;
     Employee activateSuspendEmployeeByEmployeeId(Long employeeId) throws EmployeeDoesNotExistsException;
     Employee deactivateSuspendEmployeeByEmployeeId(Long employeeId) throws EmployeeDoesNotExistsException;
-    Employee setEmployeeRoleByEmployeeId(Long employeeId, RoleRequest request) throws EmployeeDoesNotExistsException;
     Employee setEmployeeQualificationByEmployeeId(Long employeeId, QualificationRequest request) throws EmployeeDoesNotExistsException;
     Employee updateEmployee(String email, JsonPatch jsonpatch) throws EmployeeDoesNotExistsException, JsonPatchException, JsonProcessingException, EmployeeRequestException;
     String deleteAllEmployees();

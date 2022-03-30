@@ -132,16 +132,6 @@ public class EmployeeController {
         }
     }
 
-    @PostMapping(value = "/employee_role/{employeeId}")
-    public ResponseEntity<?> setEmployeeRoleByEmployeeId(@PathVariable Long employeeId, @RequestBody RoleRequest request){
-        try{
-            Employee employee = employeeService.setEmployeeRoleByEmployeeId(employeeId, request);
-            return ResponseEntity.ok().body(employee);
-        }catch (EmployeeDoesNotExistsException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
     @PostMapping(value = "/employee_qualification/{employeeId}")
     public ResponseEntity<?> setEmployeeQualificationByEmployeeId(@PathVariable Long employeeId, @RequestBody QualificationRequest request){
         try{

@@ -102,17 +102,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee setEmployeeRoleByEmployeeId(Long employeeId, RoleRequest request) throws EmployeeDoesNotExistsException {
-        Employee employee = employeeRepository.findById(employeeId).orElse(null);
-        if (employee == null) throw new EmployeeDoesNotExistsException("Employee with this "+ employeeId+" employee id does not exist");
-
-        Role role = mapper.map(request, Role.class);
-        return employee = Employee.builder()
-                .jobRole(role)
-                .build();
-    }
-
-    @Override
     public Employee setEmployeeQualificationByEmployeeId(Long employeeId, QualificationRequest request) throws EmployeeDoesNotExistsException {
         Employee employee = employeeRepository.findById(employeeId).orElse(null);
         if (employee == null) throw new EmployeeDoesNotExistsException("Employee with this "+ employeeId+" employee id does not exist");

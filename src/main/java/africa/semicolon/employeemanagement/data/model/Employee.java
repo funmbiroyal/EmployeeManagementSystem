@@ -34,9 +34,6 @@ public class Employee {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Level employeeJobLevel;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private Role jobRole;
-
     @OneToMany
     private List<Qualification> employeeQualifications;
     private Boolean isSuspended = false;
