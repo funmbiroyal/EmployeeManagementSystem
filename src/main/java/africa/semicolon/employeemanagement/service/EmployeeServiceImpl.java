@@ -1,11 +1,10 @@
 package africa.semicolon.employeemanagement.service;
 
-import africa.semicolon.employeemanagement.data.dto.EmployeeRequest;
-import africa.semicolon.employeemanagement.data.dto.EmployeeResponse;
-import africa.semicolon.employeemanagement.data.model.ConstantSalary;
-import africa.semicolon.employeemanagement.data.model.Employee;
-import africa.semicolon.employeemanagement.data.model.JobLevel;
-import africa.semicolon.employeemanagement.data.model.Level;
+import africa.semicolon.employeemanagement.data.dto.request.EmployeeRequest;
+import africa.semicolon.employeemanagement.data.dto.request.QualificationRequest;
+import africa.semicolon.employeemanagement.data.dto.request.RoleRequest;
+import africa.semicolon.employeemanagement.data.dto.response.EmployeeResponse;
+import africa.semicolon.employeemanagement.data.model.*;
 import africa.semicolon.employeemanagement.data.repository.EmployeeRepository;
 import africa.semicolon.employeemanagement.web.exception.EmployeeAlreadyExistsException;
 import africa.semicolon.employeemanagement.web.exception.EmployeeDoesNotExistsException;
@@ -35,7 +34,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeResponse createEmployee(EmployeeRequest employeeDto) throws EmployeeAlreadyExistsException {
+    public EmployeeResponse createEmployee(EmployeeRequest employeeDto) {
         if(employeeDto == null) throw new IllegalArgumentException("Employee records can not be empty");
 
         Optional<Employee> foundEmployee = employeeRepository.findByEmail(employeeDto.getEmail());
@@ -103,6 +102,30 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Employee setEmployeeRoleByEmployeeId(Long employeeId, RoleRequest request) throws EmployeeDoesNotExistsException {
+        Employee employee = employeeRepository.findById(employeeId).orElse(null);
+        if (employee == null) throw new EmployeeDoesNotExistsException("Employee with this "+ employeeId+" employee id does not exist");
+
+        Role role = mapper.map(request, Role.class);
+        return employee = Employee.builder()
+                .jobRole(role)
+                .build();
+    }
+
+    @Override
+    public Employee setEmployeeQualificationByEmployeeId(Long employeeId, QualificationRequest request) throws EmployeeDoesNotExistsException {
+        Employee employee = employeeRepository.findById(employeeId).orElse(null);
+        if (employee == null) throw new EmployeeDoesNotExistsException("Employee with this "+ employeeId+" employee id does not exist");
+
+        Qualification qualify = mapper.map(request, Qualification.class);
+
+        List<Qualification> qualification = List.of(qualify);
+       return employee = Employee.builder()
+                .employeeQualifications(qualification)
+                .build();
+    }
+
+    @Override
     public Employee updateEmployee(String email, JsonPatch jsonpatch) throws EmployeeDoesNotExistsException,
             JsonPatchException, JsonProcessingException, EmployeeRequestException {
 
@@ -164,6 +187,4 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return found;
     }
-
-
 }

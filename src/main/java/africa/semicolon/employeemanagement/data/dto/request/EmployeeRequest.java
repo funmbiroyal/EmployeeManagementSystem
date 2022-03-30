@@ -1,4 +1,4 @@
-package africa.semicolon.employeemanagement.data.dto;
+package africa.semicolon.employeemanagement.data.dto.request;
 
 import lombok.*;
 

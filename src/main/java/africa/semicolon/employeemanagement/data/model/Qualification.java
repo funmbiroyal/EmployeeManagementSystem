@@ -19,7 +19,7 @@ public class Qualification {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long QualificationId;
-    private String qualificationName;
+    private SchoolQualification qualificationName;
     @CreationTimestamp
     private LocalDateTime dateSubmitted;
 }

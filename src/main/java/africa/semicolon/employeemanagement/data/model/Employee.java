@@ -1,8 +1,10 @@
 package africa.semicolon.employeemanagement.data.model;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,8 +34,13 @@ public class Employee {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Level employeeJobLevel;
 
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private Role jobRole;
+
     @OneToMany
     private List<Qualification> employeeQualifications;
     private Boolean isSuspended = false;
 
+    @CreationTimestamp
+    private LocalDateTime creationDate = LocalDateTime.now();
 }

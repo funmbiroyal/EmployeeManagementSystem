@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer roleId;
-    private Integer employeeId;
+    private Long roleId;
+    private Long employeeId;
     private String position;
     @CreationTimestamp
     private LocalDateTime appointmentDate;

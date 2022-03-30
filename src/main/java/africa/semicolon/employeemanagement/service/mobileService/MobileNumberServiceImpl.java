@@ -1,7 +1,7 @@
 package africa.semicolon.employeemanagement.service.mobileService;
 
-import africa.semicolon.employeemanagement.data.dto.MobileNumberRequest;
-import africa.semicolon.employeemanagement.data.dto.MobileNumberResponse;
+import africa.semicolon.employeemanagement.data.dto.request.MobileNumberRequest;
+import africa.semicolon.employeemanagement.data.dto.response.MobileNumberResponse;
 import africa.semicolon.employeemanagement.data.model.MobileNumber;
 import africa.semicolon.employeemanagement.data.repository.MobileNumberRepository;
 import africa.semicolon.employeemanagement.web.exception.mobileNumberException.MobileNumberAlreadyExistException;
@@ -9,9 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class MobileNumberServiceImpl implements MobileNumberService{

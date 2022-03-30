@@ -1,5 +1,7 @@
-package africa.semicolon.employeemanagement.data.dto;
+package africa.semicolon.employeemanagement.data.dto.request;
 
+import africa.semicolon.employeemanagement.data.model.JobDepartment;
+import africa.semicolon.employeemanagement.data.model.Level;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -11,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class DepartmentRequest {
     @NotNull(message="Field can not be empty")
-    private String fieldName;
+    private JobDepartment fieldName;
     @NotNull(message="Field can not be empty")
-    private String level;
+    private Level level;
 }

@@ -1,8 +1,10 @@
 package africa.semicolon.employeemanagement.data.model;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -14,7 +16,7 @@ import java.util.List;
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @Column(unique = true)
     private JobDepartment fieldName;
@@ -24,6 +26,6 @@ public class Department {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private List<Employee> employees;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private Role jobRole;
+    @CreationTimestamp
+    private LocalDateTime creationDate = LocalDateTime.now();
 }

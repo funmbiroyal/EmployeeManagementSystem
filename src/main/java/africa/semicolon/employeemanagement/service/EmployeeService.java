@@ -1,7 +1,9 @@
 package africa.semicolon.employeemanagement.service;
 
-import africa.semicolon.employeemanagement.data.dto.EmployeeRequest;
-import africa.semicolon.employeemanagement.data.dto.EmployeeResponse;
+import africa.semicolon.employeemanagement.data.dto.request.EmployeeRequest;
+import africa.semicolon.employeemanagement.data.dto.request.QualificationRequest;
+import africa.semicolon.employeemanagement.data.dto.request.RoleRequest;
+import africa.semicolon.employeemanagement.data.dto.response.EmployeeResponse;
 import africa.semicolon.employeemanagement.data.model.Employee;
 import africa.semicolon.employeemanagement.web.exception.EmployeeAlreadyExistsException;
 import africa.semicolon.employeemanagement.web.exception.EmployeeDoesNotExistsException;
@@ -20,6 +22,8 @@ public interface EmployeeService {
     EmployeeResponse updateEmployeeSalaryByJobLevel(Long employeeId) throws EmployeeDoesNotExistsException;
     Employee activateSuspendEmployeeByEmployeeId(Long employeeId) throws EmployeeDoesNotExistsException;
     Employee deactivateSuspendEmployeeByEmployeeId(Long employeeId) throws EmployeeDoesNotExistsException;
+    Employee setEmployeeRoleByEmployeeId(Long employeeId, RoleRequest request) throws EmployeeDoesNotExistsException;
+    Employee setEmployeeQualificationByEmployeeId(Long employeeId, QualificationRequest request) throws EmployeeDoesNotExistsException;
     Employee updateEmployee(String email, JsonPatch jsonpatch) throws EmployeeDoesNotExistsException, JsonPatchException, JsonProcessingException, EmployeeRequestException;
     String deleteAllEmployees();
     String deleteEmployeeById(Long id);

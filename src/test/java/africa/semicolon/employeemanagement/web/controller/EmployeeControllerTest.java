@@ -1,6 +1,6 @@
 package africa.semicolon.employeemanagement.web.controller;
 
-import africa.semicolon.employeemanagement.data.dto.EmployeeResponse;
+import africa.semicolon.employeemanagement.data.dto.response.EmployeeResponse;
 import africa.semicolon.employeemanagement.data.repository.EmployeeRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

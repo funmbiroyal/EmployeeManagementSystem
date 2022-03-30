@@ -1,8 +1,8 @@
 package africa.semicolon.employeemanagement.service;
 
-import africa.semicolon.employeemanagement.data.dto.EmployeeRequest;
-import africa.semicolon.employeemanagement.data.dto.EmployeeResponse;
-import africa.semicolon.employeemanagement.data.model.Employee;
+import africa.semicolon.employeemanagement.data.dto.request.EmployeeRequest;
+import africa.semicolon.employeemanagement.data.dto.response.EmployeeResponse;
+import africa.semicolon.employeemanagement.data.model.*;
 import africa.semicolon.employeemanagement.web.exception.EmployeeAlreadyExistsException;
 import africa.semicolon.employeemanagement.web.exception.EmployeeDoesNotExistsException;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -22,29 +24,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Slf4j
-@Sql(scripts={"/db/insert.sql"})
+@ActiveProfiles("test")
 class EmployeeServiceTest {
 
     @Autowired
     @Qualifier("initialService")
     EmployeeService employeeService;
 
-    EmployeeResponse employeeDtoOne;
-    EmployeeResponse employeeDtoTwo;
+    EmployeeResponse res;
+    EmployeeRequest employeeDtoOne;
 
     @BeforeEach
     void setUp() {
-        employeeDtoOne = new EmployeeResponse();
-        employeeDtoOne.setFirstName("Jada");
-        employeeDtoOne.setLastName("Godson");
-        employeeDtoOne.setEmail("jada@gmail.com");
-        employeeDtoOne.setAge(1);
+        employeeDtoOne = EmployeeRequest.builder()
+                .firstName("Jahzeal")
+                .lastName("Chiemerie")
+                .email("jahzeal@gmail.com")
+                .age(3)
+                .build();
 
-        employeeDtoTwo = new EmployeeResponse();
-        employeeDtoTwo.setFirstName("Jahzeal");
-        employeeDtoTwo.setLastName("Chiemerie");
-        employeeDtoTwo.setEmail("jahzeal@gmail.com");
-        employeeDtoTwo.setAge(3);
+        res = employeeService.createEmployee(employeeDtoOne);
 
     }
 
@@ -57,27 +56,29 @@ class EmployeeServiceTest {
     @Test
     @DisplayName("Employee can create an account")
     void createEmployee() throws EmployeeAlreadyExistsException {
-        EmployeeRequest employeeDtoThree = new EmployeeRequest();
-        employeeDtoThree.setFirstName("Love");
-        employeeDtoThree.setLastName("Godson");
-        employeeDtoThree.setEmail("love@gmail.com");
-        employeeDtoThree.setAge(25);
+        EmployeeRequest employeeDtoThree = EmployeeRequest.builder()
+                .firstName("zeal")
+                .lastName("emerie")
+                .email("zeal@gmail.com")
+                .age(3)
+                .build();
 
         assertThat(employeeDtoThree).isNotNull();
 
         EmployeeResponse employee = employeeService.createEmployee(employeeDtoThree);
         log.info("Employee created is :: {}", employee);
 
-        assertThat(employee.getFirstName()).isEqualTo("Love");
-        assertThat(employee.getLastName()).isEqualTo("Godson");
-        assertThat(employee.getEmail()).isEqualTo("love@gmail.com");
-        assertThat(employee.getAge()).isEqualTo(25);
+        assertThat(employee.getFirstName()).isEqualTo("zeal");
+        assertThat(employee.getLastName()).isEqualTo("emerie");
+        assertThat(employee.getEmail()).isEqualTo("zeal@gmail.com");
+        assertThat(employee.getAge()).isEqualTo(3);
 
     }
 
     @Test
     void getAllEmployees() {
-        employeeService.findAllEmployee();
+        List<Employee> emp = employeeService.findAllEmployee();
+        assertThat(emp.size()).isEqualTo(1);
     }
 
     @Test
@@ -86,38 +87,54 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void deleteAllEmployees() {
+    void deleteAllEmployees() throws EmployeeAlreadyExistsException {
+        EmployeeRequest employeeDtoThree = EmployeeRequest.builder()
+                .firstName("zeal")
+                .lastName("emerie")
+                .email("zeal@gmail.com")
+                .age(3)
+                .build();
+
+        assertThat(employeeDtoThree).isNotNull();
+
+        EmployeeResponse employee = employeeService.createEmployee(employeeDtoThree);
+        log.info("Employee created is :: {}", employee);
+
+        assertThat(employee.getFirstName()).isEqualTo("zeal");
+        assertThat(employee.getLastName()).isEqualTo("emerie");
+        assertThat(employee.getEmail()).isEqualTo("zeal@gmail.com");
+        assertThat(employee.getAge()).isEqualTo(3);
+
         employeeService.deleteAllEmployees();
        assertEquals(0,employeeService.findAllEmployee().size());
     }
 
     @Test
-    void deleteEmployeeById() throws EmployeeDoesNotExistsException {
-        Employee employee = new Employee();
+    void deleteEmployeeById() throws EmployeeDoesNotExistsException, EmployeeAlreadyExistsException {
+        EmployeeRequest employeeDtoThree = EmployeeRequest.builder()
+                .firstName("zeal")
+                .lastName("emerie")
+                .email("zeal@gmail.com")
+                .age(3)
+                .build();
 
-        employee = employeeService.findEmployeeByEmail("precious@gmail.com").orElse(null);
+        assertThat(employeeDtoThree).isNotNull();
 
-        assert employee != null;
-        assertThat(employee.getFirstName()).isEqualTo("Precious");
-        assertThat(employee.getLastName()).isEqualTo("Lois");
-        assertThat(employee.getId()).isEqualTo(1L);
+        EmployeeResponse employee = employeeService.createEmployee(employeeDtoThree);
+        log.info("Employee created is :: {}", employee);
 
-        employeeService.deleteEmployeeById(1L);
-        assertThrows(EmployeeDoesNotExistsException.class, ()->employeeService.findEmployeeByEmail("precious@gmail.com"));
+        assertThat(employee.getFirstName()).isEqualTo("zeal");
+        assertThat(employee.getEmail()).isEqualTo(employeeDtoThree.getEmail());
 
-        Optional<Employee> emp = employeeService.findEmployeeById(1L);
-        assertEquals(true, employeeService.findEmployeeById(1L).equals("null"));
-
+        employeeService.deleteEmployeeById(employee.getId());
+        assertThat(employeeService.findAllEmployee().size()).isEqualTo(1);
     }
 
     @Test
     void findEmployeeByEmail() throws EmployeeDoesNotExistsException {
-        Employee employee = new Employee();
-
-        employee = employeeService.findEmployeeByEmail("precious@gmail.com").orElse(null);
-
-        assert employee != null;
-        assertThat(employee.getFirstName()).isEqualTo("Precious");
-        assertThat(employee.getLastName()).isEqualTo("Lois");
+        Employee employee = employeeService.findEmployeeByEmail(res.getEmail()).orElse(null);
+        assertThat(employee).isNotNull();
+        assertThat(employee.getFirstName()).isEqualTo(res.getFirstName());
+        assertThat(employee.getLastName()).isEqualTo(res.getLastName());
     }
 }
