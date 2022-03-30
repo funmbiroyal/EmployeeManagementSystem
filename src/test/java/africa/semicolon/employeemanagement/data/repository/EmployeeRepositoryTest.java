@@ -1,8 +1,6 @@
 package africa.semicolon.employeemanagement.data.repository;
 
-import africa.semicolon.employeemanagement.data.dto.EmployeeDto;
 import africa.semicolon.employeemanagement.data.model.Employee;
-import africa.semicolon.employeemanagement.data.model.EmployeeBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Slf4j
@@ -32,11 +29,11 @@ class EmployeeRepositoryTest {
     @Test
     @DisplayName("Employee can create account")
     void EmployeeCanCreateAccountTest(){
-        Employee employee = new EmployeeBuilder()
-                .setFirstName("Delight")
-                .setLastName("Adaora")
-                .setEmail("delight@gmail.com")
-                .setAge(6)
+        Employee employee = Employee.builder()
+                .firstName("Delight")
+                .lastName("Adaora")
+                .email("delight@gmail.com")
+                .age(6)
                 .build();
         log.info("Employee saved to db :: {}", employee);
         assertThat(employee).isNotNull();

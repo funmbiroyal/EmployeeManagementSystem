@@ -1,10 +1,12 @@
 package africa.semicolon.employeemanagement.service;
 
-import africa.semicolon.employeemanagement.data.dto.EmployeeDto;
+import africa.semicolon.employeemanagement.data.dto.EmployeeRequest;
+import africa.semicolon.employeemanagement.data.dto.EmployeeResponse;
 import africa.semicolon.employeemanagement.data.model.Employee;
 import africa.semicolon.employeemanagement.web.exception.EmployeeAlreadyExistsException;
 import africa.semicolon.employeemanagement.web.exception.EmployeeDoesNotExistsException;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,18 +29,18 @@ class EmployeeServiceTest {
     @Qualifier("initialService")
     EmployeeService employeeService;
 
-    EmployeeDto employeeDtoOne;
-    EmployeeDto employeeDtoTwo;
+    EmployeeResponse employeeDtoOne;
+    EmployeeResponse employeeDtoTwo;
 
     @BeforeEach
     void setUp() {
-        employeeDtoOne = new EmployeeDto();
+        employeeDtoOne = new EmployeeResponse();
         employeeDtoOne.setFirstName("Jada");
         employeeDtoOne.setLastName("Godson");
         employeeDtoOne.setEmail("jada@gmail.com");
         employeeDtoOne.setAge(1);
 
-        employeeDtoTwo = new EmployeeDto();
+        employeeDtoTwo = new EmployeeResponse();
         employeeDtoTwo.setFirstName("Jahzeal");
         employeeDtoTwo.setLastName("Chiemerie");
         employeeDtoTwo.setEmail("jahzeal@gmail.com");
@@ -46,11 +48,16 @@ class EmployeeServiceTest {
 
     }
 
+    @AfterEach
+    void tearDown(){
+        employeeService.deleteAllEmployees();
+    }
+
 
     @Test
     @DisplayName("Employee can create an account")
     void createEmployee() throws EmployeeAlreadyExistsException {
-        EmployeeDto employeeDtoThree = new EmployeeDto();
+        EmployeeRequest employeeDtoThree = new EmployeeRequest();
         employeeDtoThree.setFirstName("Love");
         employeeDtoThree.setLastName("Godson");
         employeeDtoThree.setEmail("love@gmail.com");
@@ -58,7 +65,7 @@ class EmployeeServiceTest {
 
         assertThat(employeeDtoThree).isNotNull();
 
-        Employee employee = employeeService.createEmployee(employeeDtoThree);
+        EmployeeResponse employee = employeeService.createEmployee(employeeDtoThree);
         log.info("Employee created is :: {}", employee);
 
         assertThat(employee.getFirstName()).isEqualTo("Love");
@@ -70,7 +77,7 @@ class EmployeeServiceTest {
 
     @Test
     void getAllEmployees() {
-        employeeService.getAllEmployees();
+        employeeService.findAllEmployee();
     }
 
     @Test

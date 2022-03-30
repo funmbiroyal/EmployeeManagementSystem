@@ -1,7 +1,6 @@
 package africa.semicolon.employeemanagement.web.controller;
 
-import africa.semicolon.employeemanagement.data.dto.EmployeeDto;
-import africa.semicolon.employeemanagement.data.model.Employee;
+import africa.semicolon.employeemanagement.data.dto.EmployeeResponse;
 import africa.semicolon.employeemanagement.data.repository.EmployeeRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,11 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -58,7 +55,7 @@ class EmployeeControllerTest {
 
     @Test
     void createNewEmployee() throws Exception {
-        EmployeeDto employeeDto = new EmployeeDto();
+        EmployeeResponse employeeDto = new EmployeeResponse();
         employeeDto.setFirstName("Toye");
         employeeDto.setLastName("David");
         employeeDto.setEmail("lalaland@gmail.com");

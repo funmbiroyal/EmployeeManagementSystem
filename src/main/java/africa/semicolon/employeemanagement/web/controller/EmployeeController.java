@@ -1,6 +1,7 @@
 package africa.semicolon.employeemanagement.web.controller;
 
-import africa.semicolon.employeemanagement.data.dto.EmployeeDto;
+import africa.semicolon.employeemanagement.data.dto.EmployeeRequest;
+import africa.semicolon.employeemanagement.data.dto.EmployeeResponse;
 import africa.semicolon.employeemanagement.data.model.Employee;
 import africa.semicolon.employeemanagement.service.EmployeeService;
 import africa.semicolon.employeemanagement.web.exception.EmployeeAlreadyExistsException;
@@ -26,9 +27,9 @@ public class EmployeeController {
     EmployeeService employeeService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createNewEmployee(@RequestBody EmployeeDto employeeDto){
+    public ResponseEntity<?> createNewEmployee(@RequestBody EmployeeRequest employeeRequest){
         try{
-            Employee employee = employeeService.createEmployee(employeeDto);
+            EmployeeResponse employee = employeeService.createEmployee(employeeRequest);
             return ResponseEntity.ok().body(employee);
         } catch (EmployeeAlreadyExistsException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

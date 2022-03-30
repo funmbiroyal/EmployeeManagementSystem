@@ -1,12 +1,18 @@
 package africa.semicolon.employeemanagement.data.dto;
 
-import lombok.Data;
+import lombok.*;
 
 
-@Data
-public class EmployeeDto {
+@Setter
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class EmployeeRequest {
     private String firstName;
     private String lastName;
     private String email;
     private int age;
+    private String departmentName;
+
 }

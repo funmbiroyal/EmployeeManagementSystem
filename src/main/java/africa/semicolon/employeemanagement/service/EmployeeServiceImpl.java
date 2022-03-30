@@ -1,7 +1,11 @@
 package africa.semicolon.employeemanagement.service;
 
-import africa.semicolon.employeemanagement.data.dto.EmployeeDto;
+import africa.semicolon.employeemanagement.data.dto.EmployeeRequest;
+import africa.semicolon.employeemanagement.data.dto.EmployeeResponse;
+import africa.semicolon.employeemanagement.data.model.ConstantSalary;
 import africa.semicolon.employeemanagement.data.model.Employee;
+import africa.semicolon.employeemanagement.data.model.JobLevel;
+import africa.semicolon.employeemanagement.data.model.Level;
 import africa.semicolon.employeemanagement.data.repository.EmployeeRepository;
 import africa.semicolon.employeemanagement.web.exception.EmployeeAlreadyExistsException;
 import africa.semicolon.employeemanagement.web.exception.EmployeeDoesNotExistsException;
@@ -11,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,29 +24,82 @@ import java.util.Optional;
 
 @Service("initialService")
 public class EmployeeServiceImpl implements EmployeeService {
+
+    private final EmployeeRepository employeeRepository;
+    private final ModelMapper mapper;
+
     @Autowired
-    EmployeeRepository employeeRepository;
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, ModelMapper mapper) {
+        this.employeeRepository = employeeRepository;
+        this.mapper = mapper;
+    }
 
     @Override
-    public Employee createEmployee(EmployeeDto employeeDto) throws EmployeeAlreadyExistsException {
+    public EmployeeResponse createEmployee(EmployeeRequest employeeDto) throws EmployeeAlreadyExistsException {
         if(employeeDto == null) throw new IllegalArgumentException("Employee records can not be empty");
 
         Optional<Employee> foundEmployee = employeeRepository.findByEmail(employeeDto.getEmail());
         if(foundEmployee.isPresent()) throw new EmployeeAlreadyExistsException("Employee with email "
                 +employeeDto.getEmail()+ " already exists");
 
-        Employee employee = new Employee();
-        employee.setFirstName(employeeDto.getFirstName());
-        employee.setLastName(employeeDto.getLastName());
-        employee.setEmail(employeeDto.getEmail());
-        employee.setAge(employeeDto.getAge());
-
-        return employeeRepository.save(employee);
+        Employee employee = mapper.map(employeeDto, Employee.class);
+        Employee emp = employeeRepository.save(employee);
+        return mapper.map(emp, EmployeeResponse.class);
     }
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public Optional<Employee> findEmployeeByDepartmentName(String departmentName) throws EmployeeDoesNotExistsException {
+        Optional<Employee> employee = employeeRepository.findByDepartmentNameFieldName(departmentName);
+        if (employee.isEmpty()) throw new EmployeeDoesNotExistsException("Employee with this "+ departmentName+" department does not exist");
+        return employee;
+    }
+
+    @Override
+    public EmployeeResponse setEmployeeSalaryByJobLevel(Long employeeId) throws EmployeeDoesNotExistsException {
+        Employee employee = employeeRepository.findById(employeeId).orElse(null);
+        if (employee == null) throw new EmployeeDoesNotExistsException("Employee with this "+ employeeId+" employee id does not exist");
+
+        Level level = new Level();
+        if (level.getJobLevel().equals(JobLevel.INTERNSHIP)) {
+            employee = Employee.builder()
+                    .employeeSalary(ConstantSalary.INTERNSHIP_EMPLOYEE_SALARY)
+                    .build();
+        } else  if (level.getJobLevel().equals(JobLevel.ENTRY_LEVEL)) {
+            employee = Employee.builder()
+                    .employeeSalary(ConstantSalary.ENTRY_LEVEL_EMPLOYEE_SALARY)
+                    .build();
+        } else  if (level.getJobLevel().equals(JobLevel.MIDDLE_LEVEL)) {
+            employee = Employee.builder()
+                    .employeeSalary(ConstantSalary.MIDDLE_LEVEL_EMPLOYEE_SALARY)
+                    .build();
+        } else {
+            employee = Employee.builder()
+                    .employeeSalary(ConstantSalary.SENIOR_LEVEL_EMPLOYEE_SALARY)
+                    .build();
+        }
+        return mapper.map(employee, EmployeeResponse.class);
+    }
+
+    @Override
+    public EmployeeResponse updateEmployeeSalaryByJobLevel(Long employeeId) throws EmployeeDoesNotExistsException {
+      return null;
+    }
+
+    @Override
+    public Employee activateSuspendEmployeeByEmployeeId(Long employeeId) throws EmployeeDoesNotExistsException {
+        Employee employee = employeeRepository.findById(employeeId).orElse(null);
+        if (employee == null) throw new EmployeeDoesNotExistsException("Employee with this "+ employeeId+" employee id does not exist");
+
+        if (employee.getIsSuspended().equals(false)) employee.setIsSuspended(true);
+        return employee;
+    }
+
+    @Override
+    public Employee deactivateSuspendEmployeeByEmployeeId(Long employeeId) throws EmployeeDoesNotExistsException {
+        Employee employee = employeeRepository.findById(employeeId).orElse(null);
+        if (employee == null) throw new EmployeeDoesNotExistsException("Employee with this "+ employeeId+" employee id does not exist");
+        if (employee.getIsSuspended().equals(true)) employee.setIsSuspended(false);
+        return employee;
     }
 
     @Override
@@ -67,13 +125,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void deleteAllEmployees() {
+    public String deleteAllEmployees() {
         employeeRepository.deleteAll();
+        return "Successfully deleted";
     }
 
     @Override
     public String deleteEmployeeById(Long id) {
-        if(id == null) throw new IllegalArgumentException("employee with id" + " "+ id +" " + "does not exist");
+        if(id == null) throw new IllegalArgumentException("Field can be empty");
 
         if(employeeRepository.findById(id).isPresent()) employeeRepository.deleteById(id);
 
@@ -82,7 +141,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> findEmployeeByEmail(String email) throws EmployeeDoesNotExistsException {
-        if(email == null) throw new IllegalArgumentException("Employee with the email "+ email + "is empty");
+        if(email == null) throw new IllegalArgumentException("Field can not be null");
 
         Optional<Employee> foundEmployee = employeeRepository.findByEmail(email);
         if(foundEmployee.isEmpty()) throw new EmployeeDoesNotExistsException("Employee with the email " + email + " doesn't exist");
@@ -97,7 +156,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> findEmployeeById(Long id) throws EmployeeDoesNotExistsException {
-        if(id== null) throw new IllegalArgumentException("Employee with the id "+ id +" is empty");
+        if(id == null) throw new IllegalArgumentException("Field can not be null");
 
         Optional<Employee> found = employeeRepository.findById(id);
 

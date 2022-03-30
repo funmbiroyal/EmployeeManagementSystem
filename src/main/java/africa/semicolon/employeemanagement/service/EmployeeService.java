@@ -1,6 +1,7 @@
 package africa.semicolon.employeemanagement.service;
 
-import africa.semicolon.employeemanagement.data.dto.EmployeeDto;
+import africa.semicolon.employeemanagement.data.dto.EmployeeRequest;
+import africa.semicolon.employeemanagement.data.dto.EmployeeResponse;
 import africa.semicolon.employeemanagement.data.model.Employee;
 import africa.semicolon.employeemanagement.web.exception.EmployeeAlreadyExistsException;
 import africa.semicolon.employeemanagement.web.exception.EmployeeDoesNotExistsException;
@@ -13,10 +14,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeService {
-    Employee createEmployee(EmployeeDto employeeDto) throws EmployeeAlreadyExistsException;
-    List<Employee> getAllEmployees();
+    EmployeeResponse createEmployee(EmployeeRequest employeeDto) throws EmployeeAlreadyExistsException;
+    Optional<Employee> findEmployeeByDepartmentName(String departmentName) throws EmployeeDoesNotExistsException;
+    EmployeeResponse setEmployeeSalaryByJobLevel(Long employeeId) throws EmployeeDoesNotExistsException;
+    EmployeeResponse updateEmployeeSalaryByJobLevel(Long employeeId) throws EmployeeDoesNotExistsException;
+    Employee activateSuspendEmployeeByEmployeeId(Long employeeId) throws EmployeeDoesNotExistsException;
+    Employee deactivateSuspendEmployeeByEmployeeId(Long employeeId) throws EmployeeDoesNotExistsException;
     Employee updateEmployee(String email, JsonPatch jsonpatch) throws EmployeeDoesNotExistsException, JsonPatchException, JsonProcessingException, EmployeeRequestException;
-    void deleteAllEmployees();
+    String deleteAllEmployees();
     String deleteEmployeeById(Long id);
     Optional<Employee> findEmployeeByEmail(String name) throws EmployeeDoesNotExistsException;
     List<Employee> findAllEmployee();

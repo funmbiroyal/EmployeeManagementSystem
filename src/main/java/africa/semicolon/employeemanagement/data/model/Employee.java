@@ -1,39 +1,39 @@
 package africa.semicolon.employeemanagement.data.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Data
-//@AllArgsConstructor
-//@NoArgsConstructor
-//@RequiredArgsConstructor
+@Getter
+@Setter
+@ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @Column(nullable = false)
     private String firstName;
-
-    @Column(nullable = false)
     private String lastName;
 
-    @Column(unique=true, nullable = false)
+    @Column(unique=true)
     private String email;
-
-    @Column(nullable = false)
     private int age;
 
-    public Employee(String firstName, String lastName, String email, int age) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.age = age;
-    }
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Department departmentName;
 
-    public Employee() {
+    private Integer employeeSalary;
 
-    }
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private Level employeeJobLevel;
+
+    @OneToMany
+    private List<Qualification> employeeQualifications;
+    private Boolean isSuspended = false;
+
 }
