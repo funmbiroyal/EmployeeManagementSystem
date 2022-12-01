@@ -36,13 +36,15 @@ class EmployeeRepositoryTest {
                 .age(6)
                 .build();
         log.info("Employee saved to db :: {}", employee);
+        log.info("empTest->{}", employee);
         assertThat(employee).isNotNull();
 
-        employeeRepository.save(employee);
-        log.info("Employee saved to db :: {}", employee);
+        Employee savedEmployee=employeeRepository.save(employee);
+        log.info("Employee saved to db :: {}", savedEmployee);
 
 
-
+        log.info("emp->{}", employee);
+        assertThat(employee.getId()).isGreaterThan(0L);
         assertThat(employee.getFirstName()).isNotNull();
         assertThat(employee.getFirstName()).isEqualTo("Delight");
         assertThat(employee.getLastName()).isEqualTo("Adaora");

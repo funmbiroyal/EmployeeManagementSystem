@@ -1,10 +1,12 @@
 package africa.semicolon.employeemanagement;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
@@ -21,12 +23,18 @@ class EmployeeManagementApplicationTest {
     @Value("${test.property.name}")
     private String testName;
 
+
+
     @Autowired
     private DataSource dataSource;
 
+    @BeforeEach
+    void setUp(){
+    }
+
     @Test
     void valueExists() {
-        assertThat(testName);
+        assertThat(testName).isEqualTo("john");
     }
 
     @Test
